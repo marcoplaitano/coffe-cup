@@ -205,6 +205,11 @@ table td button:focus {
 table td button:active {
   filter: brightness(80%);
 }
+table td button.delete-btn {
+  font-weight: normal;
+  border: none;
+  margin-left: 2rem;
+}
 
 /* ***** INPUT ***** */
 input[type="text"] {

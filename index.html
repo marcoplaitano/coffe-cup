@@ -36,7 +36,7 @@
         <tbody id="tbody">
         </tbody>
       </table>
-      <input id="name-input" type="text" placeholder="Nuovo partecipante" onkeypress="addPartecipante(event)">
+      <input id="name-input" type="text" placeholder="Nuovo partecipante" onkeypress="addUser(event)">
     </article>
   </main>
 
@@ -136,7 +136,8 @@ function updateTable(data) {
     // Casino per decidere a chi va mostrata l'icona della medaglia/merda
     const cellMedal = document.createElement("td");
     cellMedal.className = "medal";
-    if (score == minValue) {
+    if (score == minValue && index > 2) {
+      console.log("index:", index);
       cellMedal.innerHTML = MEDAL_POOP;
       prevMedal = MEDAL_POOP;
     }
@@ -170,7 +171,7 @@ function updateTable(data) {
     prevScore = score;
 
     // Crea riga nella tabella con:
-    // ICONA   NOME  PUNTEGGIO  +  -
+    // ICONA   NOME  PUNTEGGIO  +  -  DEL
     const cellName = document.createElement("td");
     cellName.className = "name";
     cellName.textContent = name;
@@ -180,7 +181,6 @@ function updateTable(data) {
     cellScore.textContent = score;
 
     const cellButtonPlus = document.createElement("td");
-    cellButtonPlus.className = "plus-btn";
     const buttonPlus = document.createElement("button");
     buttonPlus.id = name;
     buttonPlus.textContent = "+";
@@ -188,18 +188,26 @@ function updateTable(data) {
     cellButtonPlus.appendChild(buttonPlus);
 
     const cellButtonMinus = document.createElement("td");
-    cellButtonMinus.className = "plus-btn";
     const buttonMinus = document.createElement("button");
     buttonMinus.id = name;
     buttonMinus.textContent = "-";
     buttonMinus.setAttribute("onclick", "decrementScore(this)");
     cellButtonMinus.appendChild(buttonMinus);
 
+    const cellButtonDelete = document.createElement("td");
+    const buttonDelete = document.createElement("button");
+    buttonDelete.className = "delete-btn";
+    buttonDelete.id = name;
+    buttonDelete.innerHTML = "&#x1f5d1;";
+    buttonDelete.setAttribute("onclick", "deleteUser(this)");
+    cellButtonDelete.appendChild(buttonDelete);
+
     row.appendChild(cellMedal);
     row.appendChild(cellName);
     row.appendChild(cellScore);
     row.appendChild(cellButtonPlus);
     row.appendChild(cellButtonMinus);
+    row.appendChild(cellButtonDelete);
     table.appendChild(row);
   }
 }
@@ -220,7 +228,7 @@ function findMinScore(data) {
 // ogni volta che viene inserito un carattere nell'input field;
 // quando il carattere è ENTER, prendi il testo e usalo come
 // nome per definire il nuovo utente.
-async function addPartecipante(inputField) {
+async function addUser(inputField) {
   if (event.key === "Enter") {
     var name = document.getElementById("name-input").value;
     document.getElementById("name-input").value = "";  // Pulisci input field.
@@ -237,6 +245,22 @@ async function addPartecipante(inputField) {
       console.error("Aiuto errore:", error);
       alert("Aiuto errore");
     }
+  }
+}
+
+async function deleteUser(btn) {
+  const name = btn.id;
+  try {
+    const response = await fetch("/api/delete-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name })
+    });
+    const data = await response.json();
+    updateTable(data);
+  } catch (error) {
+    console.error("Aiuto errore:", error);
+    alert("Aiuto errore");
   }
 }
 </script>
