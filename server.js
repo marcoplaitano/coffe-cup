@@ -43,6 +43,16 @@ app.post("/api/decrement-score", async (req, res) => {
   res.json(sortedData); // Send the sorted list to the client
 });
 
+// API endpoint to add a new user
+app.post("/api/add-user", async (req, res) => {
+  let data = await readJSONFile(FILENAME);
+  const { name } = req.body;
+  data[name] = 0;
+  await writeJSONFile(FILENAME, data);
+  let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+  res.json(sortedData); // Send the sorted list to the client
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -36,7 +36,7 @@
         <tbody id="tbody">
         </tbody>
       </table>
-      <!-- <input type="text" placeholder="Nuovo partecipante" onsubmit="console.log('aa')"> -->
+      <input id="name-input" type="text" placeholder="Nuovo partecipante" onkeypress="addPartecipante(event)">
     </article>
   </main>
 
@@ -209,6 +209,29 @@ function findMinScore(data) {
       min = score;
   }
   return min;
+}
+
+async function addPartecipante(inputField) {
+  if (event.key === 'Enter') {
+    var name = document.getElementById("name-input").value;
+    console.log("Partecipante added:", name);
+    document.getElementById("name-input").value = '';
+    try {
+      const response = await fetch("/api/add-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name })
+      });
+
+      const data = await response.json();
+      updateTable(data);
+    } catch (error) {
+      console.error("Aiuto errore:", error);
+      alert("Aiuto errore");
+    }
+  }
 }
 </script>
 </html>
