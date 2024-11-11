@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+  <link rel="canonical" href="https://coffecup.netlify.app/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Coffe Cup degli scemi">
+
+  <meta property="og:title" content="Coffe Cup">
+  <meta property="twitter:title" content="Coffe Cup">
+  <meta property="og:description" content="Coffe Cup degli scemi">
+  <meta property="twitter:description" content="Coffe Cup degli scemi">
+  <meta property="og:url" content="https://coffecup.netlify.app/">
+  <meta name="twitter:card" content="summary">
+
+  <meta name="theme-color" content="#FDFDFD" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#18191A" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="/style/style.css">
+  <title>Coffe Cup</title>
+</head>
+
+<body>
+  <header id="banner">
+    <h1>&#x2615; COFFE CUP! &#x2615;</h1>
+  </header>
+
+  <main>
+    <article>
+      <h2 id="date-title"></h2>
+      <table>
+        <tbody id="tbody">
+          <tr>
+            <td class="medal">&#x1f947;</td>
+            <td class="name">Luca Del Rio</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Luca Del Rio" onclick="incrementScore(this)">+</button></td>
+          </tr>
+          <tr>
+            <td class="medal">&#x1f948;</td>
+            <td class="name">Riccardo Torrisi</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Riccardo Torrisi" onclick="incrementScore(this)">+</button></td>
+          </tr>
+          <tr>
+            <td class="medal">&#x1f949;</td>
+            <td class="name">Marco Plaitano</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Marco Plaitano" onclick="incrementScore(this)">+</button></td>
+          </tr>
+          <tr>
+            <td class="medal"></td>
+            <td class="name">Paolo Romeo</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Paolo Romeo" onclick="incrementScore(this)">+</button></td>
+          </tr>
+          <tr>
+            <td class="medal"></td>
+            <td class="name">Francesco Viscanti</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Francesco Viscanti" onclick="incrementScore(this)">+</button></td>
+          </tr>
+          <tr>
+            <td class="medal">&#x1F4A9;</td>
+            <td class="name">Leonardo Urbinati</td>
+            <td class="score">1</td>
+            <td class="plus-btn"><button id="Leonardo Urbinati" onclick="incrementScore(this)">+</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <input type="text" placeholder="Nuovo partecipante" onsubmit="console.log('aa')"> -->
+    </article>
+  </main>
+
+  <footer></footer>
+</body>
+
+<script>
+// Riempi titolo con data corrente.
+const date = new Date();
+const year = date.getFullYear();
+const monthIndex = date.getMonth();
+const months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+const month = months[monthIndex];
+document.getElementById("date-title").innerHTML = month + " " + year;
+
+const MEDAL_GOLD = "&#x1f947;";
+const MEDAL_SILVER = "&#x1f948;";
+const MEDAL_BRONZE = "&#x1f949;";
+const MEDAL_POOP = "&#x1F4A9;";
+
+async function setupTable() {
+  console.log("Setting up table.");
+
+  try {
+    const response = await fetch("/api/get-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    updateTable(data);
+  } catch (error) {
+    console.error("Aiuto errore:", error);
+    alert("Aiuto errore");
+  }
+}
+
+window.onload = async () => {
+  await setupTable();
+};
+
+async function incrementScore(btn) {
+  const name = btn.id;
+  console.log("Yooo name: " + name);
+
+  try {
+    const response = await fetch("/api/increment-score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name })
+    });
+
+    const data = await response.json();
+    updateTable(data);
+  } catch (error) {
+    console.error("Aiuto errore:", error);
+    alert("Aiuto errore");
+  }
+}
+
+function updateTable(data) {
+  const table = document.getElementById("tbody");
+  table.innerHTML = "";
+
+  let minValue = findMinScore(data);
+  console.log(minValue);
+  var prevMedal = NaN;
+  var prevScore = NaN;
+  var index = 0;
+  for (let i = 0; i < data.length; i++) {
+    let [name, score] = data[i];
+    const row = document.createElement("tr");
+
+    const cellMedal = document.createElement("td");
+    cellMedal.className = "medal";
+    if (score == minValue) {
+      cellMedal.innerHTML = MEDAL_POOP;
+      prevMedal = MEDAL_POOP;
+    }
+    else if (score == prevScore) {
+      cellMedal.innerHTML = prevMedal;
+    }
+    else if (index == 0) {
+      cellMedal.innerHTML = MEDAL_GOLD;
+      prevMedal = MEDAL_GOLD;
+      index++;
+    }
+    else if (index == 1) {
+      cellMedal.innerHTML = MEDAL_SILVER;
+      prevMedal = MEDAL_SILVER;
+      index++;
+    }
+    else if (index == 2) {
+      if (prevMedal == MEDAL_GOLD) {
+        cellMedal.innerHTML = MEDAL_SILVER;
+        prevMedal = MEDAL_SILVER;
+      }
+      else {
+        cellMedal.innerHTML = MEDAL_BRONZE;
+        prevMedal = MEDAL_BRONZE;
+      }
+      index++;
+    }
+    else {
+      prevMedal = "";
+    }
+    prevScore = score;
+
+    const cellName = document.createElement("td");
+    cellName.className = "name";
+    cellName.textContent = name;
+
+    const cellScore = document.createElement("td");
+    cellScore.className = "score";
+    cellScore.textContent = score;
+
+    const cellButton = document.createElement("td");
+    cellButton.className = "plus-btn";
+    const button = document.createElement("button");
+    button.id = name;
+    button.textContent = "+";
+    button.setAttribute("onclick", "incrementScore(this)");
+    cellButton.appendChild(button);
+
+    row.appendChild(cellMedal);
+    row.appendChild(cellName);
+    row.appendChild(cellScore);
+    row.appendChild(cellButton);
+
+    table.appendChild(row);
+  }
+}
+
+function findMinScore(data) {
+  var min = 10000;
+  for (let i = 0; i < data.length; i++) {
+    let [name, score] = data[i];
+    if (score <= min)
+      min = score;
+  }
+  return min;
+}
+</script>
+</html>

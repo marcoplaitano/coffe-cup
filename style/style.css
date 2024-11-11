@@ -1,0 +1,305 @@
+/* ***** VARIABLES ***** */
+:root {
+  --font-sans-serif: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  --font-serif: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+  --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+  --image-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  --color-background: #FDFDFD;
+  --color-text: #212529;
+  --color-text2: #616C75;
+  --color-text2-underline: #616C75AA;
+  --color-placeholder: #A3ACB5;
+  --color-accent: #076ED5;
+  --color-title: #B7804F;
+  --color-grey: #6C757D;
+  --color-hr: #DEE2E6;
+  --color-footer-hr: #A3ACB5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #18191A;
+    --color-text: #D0D7DE;
+    --color-text2: #89949D;
+    --color-text2-underline: #89949DDD;
+    --color-placeholder: #89949D;
+    --color-accent: #64B1FF;
+    --color-title: #B7804F;
+    --color-grey: #555D66;
+    --color-hr: #555D66;
+    --color-footer-hr: #555D66;
+  }
+}
+
+
+/* ***** MAIN ***** */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 62.5%;
+  font-family: var(--font-sans-serif);
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+/* Disable smooth scrolling if reduced motion is active */
+@media (prefers-reduced-motion:reduce) {
+  html {scroll-behavior: auto;}
+}
+
+body {
+  font-size: 1.6rem;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 3rem;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1 { font-size: 1.6em; }
+h2 { font-size: 1.4em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.8em; }
+h5 { font-size: 0.6em; }
+main h1 {
+  line-height: 1.2;
+  margin: 0 0 1.2rem;
+}
+h2 {
+  line-height: 1;
+  margin: 2rem 0 1.2rem;
+}
+h3 {
+  line-height: 1;
+  margin: 2.4rem 0 1.2rem;
+}
+h4,
+h5,
+h6 {
+  line-height: 1.16;
+  margin: 2.4rem 0 0.8rem;
+}
+hr {
+  margin: 2.4rem 0;
+  border-color: var(--color-hr);
+}
+
+
+/* ***** HEADER ***** */
+header#banner {
+  margin-bottom: 0.1em;
+}
+header#banner h1 {
+  margin-top: 0.4rem;
+  margin-bottom: 0;
+  color: var(--color-title);
+}
+header#banner h1 a {
+  text-decoration: none;
+}
+
+
+/* ***** LINKS ***** */
+a {
+  cursor: pointer;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:active {
+  filter: brightness(80%);
+}
+a[target="_blank"]::after {
+  /* u21aa ufe0e  second one is invisible: to avoid glyph turning into emoji */
+  content: " ↪︎";
+  white-space: pre;
+  display: inline-block;
+  margin-right: 0.2em;
+}
+a:hover,
+a:focus,
+a[target="_blank"]:hover::after,
+a[target="_blank"]:focus::after {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:visited,
+a[target="_blank"]:visited::after {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+
+/* ***** LIST ***** */
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+ul li:not(:last-child) {
+  padding-bottom: 0.8rem;
+}
+
+details summary {
+  cursor: pointer;
+}
+summary *:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+/* Make summary title appear in the same line of the toggle button. */
+details summary>* {
+  display: inline;
+  padding-left: 0.3rem;
+}
+
+
+/* ***** TABLE ***** */
+table {
+  margin: 1em 0;
+}
+table td.medal {
+  /* top right bottom left */
+  padding: 1rem 1.6rem 1rem 0;
+  /*font-size: 2rem; */
+  align-items: center;
+  vertical-align: middle;
+}
+table td.name {
+  text-transform: capitalize;
+  /* top right bottom left */
+  padding: 1rem 3rem 1rem 0;
+}
+table td.score {
+  /* top right bottom left */
+  padding: 1rem 3rem 1rem 0;
+}
+table td button {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans-serif);
+  font-weight: bold;
+  font-size: inherit;
+  padding: 0 1em;
+  border-radius: 6px;
+  border: 1px solid grey;
+}
+table td button:hover,
+table td button:focus {
+  cursor: pointer;
+}
+table td button:active {
+  filter: brightness(80%);
+}
+
+/* ***** INPUT ***** */
+input[type="text"] {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans-serif);
+  font-size: inherit;
+  outline: none;
+  border-radius: 8px;
+  border: 1px solid var(--color-grey);
+  padding: 0.4em 0.4em 0.4em;
+  display: flex;
+  margin-bottom: 1.2em;
+}
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+::placeholder {
+  color: var(--color-placeholder);
+  opacity: 1;
+}
+::-ms-input-placeholder {
+  color: var(--color-placeholder);
+}
+
+
+/* ***** TEXT & PARAGRAPHS ***** */
+p {
+  color: var(--color-text);
+  text-align: left;
+  margin: 0;
+}
+main {
+  line-height: 1.6;
+}
+main p + p {
+  margin-top: 1em;
+}
+
+
+/* ***** FOOTER ***** */
+/* Stretch main to fill all remaining space towards the bottom of the page. */
+main {
+  flex: 1;
+}
+footer {
+  width: 100%;
+  margin: 4rem 0 0.5rem;
+  font-size: 1.6rem;
+}
+footer hr {
+  border-style: dashed;
+  border-color: var(--color-footer-hr);
+}
+footer p {
+  color: var(--color-text2);
+}
+footer a {
+  color: var(--color-text2);
+  text-decoration: underline;
+  text-decoration-color: var(--color-text2-underline);
+  text-decoration-thickness: 1px;
+}
+
+
+/* ***** DESKTOP VERSION ***** */
+@media screen and (min-width:770px) {
+  body {
+    width: 750px;
+  }
+  header#banner h1 {
+    margin-top: 1.5rem;
+  }
+}
+
+
+/* ***** MOBILE VERSION ***** */
+@media screen and (max-width:500px) {
+  /* To keep footer at the bottom of the page while considering mobile height
+   * space occupied by browser's tabs. */
+  body {
+    height: 100%;
+    font-size: 1.6rem;
+    min-height: 100%;
+    padding: 0 2.4rem;
+  }
+  footer {
+    margin-bottom: 0;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width:370px) {
+  body {
+    padding: 0 1.5rem;
+  }
+}
