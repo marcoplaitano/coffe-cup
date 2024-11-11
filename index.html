@@ -52,14 +52,15 @@ const months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "L
 const month = months[monthIndex];
 document.getElementById("date-title").innerHTML = month + " " + year;
 
+// Variabili globali
 const MEDAL_GOLD = "&#x1f947;";
 const MEDAL_SILVER = "&#x1f948;";
 const MEDAL_BRONZE = "&#x1f949;";
 const MEDAL_POOP = "&#x1F4A9;";
 
+// Chiamata quando carica la pagina per mostrare il punteggio corrente
 async function setupTable() {
   console.log("Setting up table.");
-
   try {
     const response = await fetch("/api/get-data", {
       method: "POST",
@@ -77,6 +78,7 @@ window.onload = async () => {
   await setupTable();
 };
 
+// Aumenta di 1 punteggio del giocatore, identificato dal pulsante premuto
 async function incrementScore(btn) {
   const name = btn.id;
   console.log("Yooo name: " + name);
@@ -84,12 +86,9 @@ async function incrementScore(btn) {
   try {
     const response = await fetch("/api/increment-score", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name })
     });
-
     const data = await response.json();
     updateTable(data);
   } catch (error) {
@@ -98,6 +97,7 @@ async function incrementScore(btn) {
   }
 }
 
+// Decrementa di 1 il punteggio del giocatore, identificato dal pulsante premuto
 async function decrementScore(btn) {
   const name = btn.id;
   console.log("Yooo name: " + name);
@@ -105,12 +105,9 @@ async function decrementScore(btn) {
   try {
     const response = await fetch("/api/decrement-score", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name })
     });
-
     const data = await response.json();
     updateTable(data);
   } catch (error) {
@@ -119,19 +116,24 @@ async function decrementScore(btn) {
   }
 }
 
+// Aggiorna la tabella con i nuovi valori
 function updateTable(data) {
   const table = document.getElementById("tbody");
-  table.innerHTML = "";
+  table.innerHTML = "";  // Pulisci tabella
 
+  // Punteggio più basso (per decidere a chi mostrare l'icona della merda)
   let minValue = findMinScore(data);
   console.log(minValue);
+
   var prevMedal = NaN;
   var prevScore = NaN;
   var index = 0;
+
   for (let i = 0; i < data.length; i++) {
     let [name, score] = data[i];
     const row = document.createElement("tr");
 
+    // Casino per decidere a chi va mostrata l'icona della medaglia/merda
     const cellMedal = document.createElement("td");
     cellMedal.className = "medal";
     if (score == minValue) {
@@ -167,6 +169,8 @@ function updateTable(data) {
     }
     prevScore = score;
 
+    // Crea riga nella tabella con:
+    // ICONA   NOME  PUNTEGGIO  +  -
     const cellName = document.createElement("td");
     cellName.className = "name";
     cellName.textContent = name;
@@ -196,11 +200,12 @@ function updateTable(data) {
     row.appendChild(cellScore);
     row.appendChild(cellButtonPlus);
     row.appendChild(cellButtonMinus);
-
     table.appendChild(row);
   }
 }
 
+// Trova punteggio minimo nell'oggetto JSON.
+// L'oggetto è una serie di "Nome": Num
 function findMinScore(data) {
   var min = 10000;
   for (let i = 0; i < data.length; i++) {
@@ -211,20 +216,21 @@ function findMinScore(data) {
   return min;
 }
 
+// Aggiungi nuovo partecipante. Questa funzione viene chiamata
+// ogni volta che viene inserito un carattere nell'input field;
+// quando il carattere è ENTER, prendi il testo e usalo come
+// nome per definire il nuovo utente.
 async function addPartecipante(inputField) {
-  if (event.key === 'Enter') {
+  if (event.key === "Enter") {
     var name = document.getElementById("name-input").value;
+    document.getElementById("name-input").value = "";  // Pulisci input field.
     console.log("Partecipante added:", name);
-    document.getElementById("name-input").value = '';
     try {
       const response = await fetch("/api/add-user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name })
       });
-
       const data = await response.json();
       updateTable(data);
     } catch (error) {
