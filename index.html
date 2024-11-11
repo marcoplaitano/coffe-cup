@@ -98,6 +98,27 @@ async function incrementScore(btn) {
   }
 }
 
+async function decrementScore(btn) {
+  const name = btn.id;
+  console.log("Yooo name: " + name);
+
+  try {
+    const response = await fetch("/api/decrement-score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name })
+    });
+
+    const data = await response.json();
+    updateTable(data);
+  } catch (error) {
+    console.error("Aiuto errore:", error);
+    alert("Aiuto errore");
+  }
+}
+
 function updateTable(data) {
   const table = document.getElementById("tbody");
   table.innerHTML = "";
@@ -154,18 +175,27 @@ function updateTable(data) {
     cellScore.className = "score";
     cellScore.textContent = score;
 
-    const cellButton = document.createElement("td");
-    cellButton.className = "plus-btn";
-    const button = document.createElement("button");
-    button.id = name;
-    button.textContent = "+";
-    button.setAttribute("onclick", "incrementScore(this)");
-    cellButton.appendChild(button);
+    const cellButtonPlus = document.createElement("td");
+    cellButtonPlus.className = "plus-btn";
+    const buttonPlus = document.createElement("button");
+    buttonPlus.id = name;
+    buttonPlus.textContent = "+";
+    buttonPlus.setAttribute("onclick", "incrementScore(this)");
+    cellButtonPlus.appendChild(buttonPlus);
+
+    const cellButtonMinus = document.createElement("td");
+    cellButtonMinus.className = "plus-btn";
+    const buttonMinus = document.createElement("button");
+    buttonMinus.id = name;
+    buttonMinus.textContent = "-";
+    buttonMinus.setAttribute("onclick", "decrementScore(this)");
+    cellButtonMinus.appendChild(buttonMinus);
 
     row.appendChild(cellMedal);
     row.appendChild(cellName);
     row.appendChild(cellScore);
-    row.appendChild(cellButton);
+    row.appendChild(cellButtonPlus);
+    row.appendChild(cellButtonMinus);
 
     table.appendChild(row);
   }
