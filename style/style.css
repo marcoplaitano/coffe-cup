@@ -237,6 +237,28 @@ input[type="text"]:focus {
 }
 
 
+.log-btn {
+  border: none;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans-serif);
+  font-size: inherit;
+  outline: none;
+  border-radius: 8px;
+  border: 1px solid var(--color-grey);
+  padding: 0.5em 0.5em;
+  display: flex;
+  margin-bottom: 2rem;
+}
+.log-btn:hover,
+.log-btn:focus {
+  cursor: pointer;
+}
+.log-btn:active {
+  filter: brightness(80%);
+}
+
+
 /* ***** TEXT & PARAGRAPHS ***** */
 p {
   color: var(--color-text);
@@ -295,16 +317,15 @@ footer a {
     height: 100%;
     font-size: 1.6rem;
     min-height: 100%;
-    padding: 0 2.4rem;
+    padding: 0 1.6rem;
   }
+
+  table td button.delete-btn {
+    margin-left: 1rem;
+  }
+
   footer {
     margin-bottom: 0;
     padding-bottom: 1.5rem;
-  }
-}
-
-@media screen and (max-width:370px) {
-  body {
-    padding: 0 1.5rem;
   }
 }

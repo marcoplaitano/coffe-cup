@@ -37,6 +37,10 @@
         </tbody>
       </table>
       <input id="name-input" type="text" placeholder="Nuovo partecipante" onkeypress="addUser(event)">
+      <br><hr>
+      <button class="log-btn" id="show-log-btn" onclick="showLog()">Show log</button>
+      <button class="log-btn" id="hide-log-btn" onclick="hideLog()"  style="display: none;">Hide log</button>
+      <p id="log-text"></p>
     </article>
   </main>
 
@@ -262,6 +266,34 @@ async function deleteUser(btn) {
     console.error("Aiuto errore:", error);
     alert("Aiuto errore");
   }
+}
+
+async function showLog() {
+  let showLogBtn = document.getElementById("show-log-btn");
+  let hideLogBtn = document.getElementById("hide-log-btn");
+  showLogBtn.style.display = "none";
+  hideLogBtn.style.display = "";
+
+  try {
+    const response = await fetch("/api/show-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    const log = await response.text();
+    document.getElementById("log-text").innerHTML = log;
+  } catch (error) {
+    console.error("Aiuto errore:", error);
+    alert("Aiuto errore");
+  }
+}
+
+function hideLog() {
+  let showLogBtn = document.getElementById("show-log-btn");
+  let hideLogBtn = document.getElementById("hide-log-btn");
+  showLogBtn.style.display = "";
+  hideLogBtn.style.display = "none";
+
+  document.getElementById("log-text").innerHTML = "";
 }
 </script>
 </html>

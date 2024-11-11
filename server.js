@@ -7,6 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const FILENAME = "scores.json";
+const LOG_FILE = "log.txt";
+const LOG_FILE_PATH = path.resolve(__dirname, LOG_FILE);
 
 // Serve static HTML file
 app.use(express.static(path.join(__dirname)));
@@ -27,6 +29,7 @@ app.post("/api/increment-score", async (req, res) => {
   const { name } = req.body;
   data[name] = (data[name] || 0) + 1;
   await writeJSONFile(FILENAME, data);
+  logf(name + " + " + data[name]);
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
 });
@@ -39,6 +42,7 @@ app.post("/api/decrement-score", async (req, res) => {
   if (data[name] < 0)
     data[name] = 0;
   await writeJSONFile(FILENAME, data);
+  logf(name + " - " + data[name]);
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
 });
@@ -49,6 +53,7 @@ app.post("/api/add-user", async (req, res) => {
   const { name } = req.body;
   data[name] = 0;
   await writeJSONFile(FILENAME, data);
+  logf(name + " new user");
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
 });
@@ -59,8 +64,22 @@ app.post("/api/delete-user", async (req, res) => {
   const { name } = req.body;
   delete data[name];
   await writeJSONFile(FILENAME, data);
+  logf(name + " delete user");
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
+});
+
+// API endpoint to show log
+app.post("/api/show-log", async (req, res) => {
+  const NUM_LINES = 20; // Number of lines to read from the file.
+  try {
+    const data = await fs.readFile(LOG_FILE_PATH, 'utf8');
+    const lines = data.trim().split('\n').reverse();
+    res.send(lines.slice(-NUM_LINES).join('<br>')); // Join lines with <br> for HTML formatting
+  } catch (err) {
+    console.error('Error reading the log file:', err);
+    res.status(500).send('Error reading the log file.');
+  }
 });
 
 // Start the server
@@ -85,4 +104,19 @@ async function writeJSONFile(filename, data) {
   } catch (error) {
     console.error(`Error writing ${filename}:`, error);
   }
+}
+
+function logf(message) {
+  const now = new Date();
+  const formattedDate = now.toLocaleDateString('en-GB').replace(/\//g, '-'); // Format dd/mm/YY
+  const formattedTime = now.toTimeString().split(' ')[0]; // Format HH:MM:SS
+
+  const logEntry = `${formattedDate} ${formattedTime}: ${message}\n`;
+
+  // Append the message to the specified file
+  fs.appendFile(LOG_FILE_PATH, logEntry, (err) => {
+    if (err) {
+      console.error('Error writing to log file:', err);
+    }
+  });
 }
