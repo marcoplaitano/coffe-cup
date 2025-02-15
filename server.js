@@ -6,7 +6,8 @@ const fs = require("fs").promises;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const FILENAME = "scores.json";
+const SCORES_FILE = "scores.json";
+const SCORES_FILE_PATH = path.resolve(__dirname, SCORES_FILE)
 const LOG_FILE = "log.txt";
 const LOG_FILE_PATH = path.resolve(__dirname, LOG_FILE);
 
@@ -18,17 +19,17 @@ app.use(bodyParser.json());
 
 // API endpoint to get current data
 app.post("/api/get-data", async (req, res) => {
-  let data = await readJSONFile(FILENAME);
+  let data = await readJSONFile(SCORES_FILE_PATH);
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
 });
 
 // API endpoint to increment score
 app.post("/api/increment-score", async (req, res) => {
-  let data = await readJSONFile(FILENAME);
+  let data = await readJSONFile(SCORES_FILE_PATH);
   const { name } = req.body;
   data[name] = (data[name] || 0) + 1;
-  await writeJSONFile(FILENAME, data);
+  await writeJSONFile(SCORES_FILE_PATH, data);
   logf(name + " + " + data[name]);
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
@@ -36,12 +37,12 @@ app.post("/api/increment-score", async (req, res) => {
 
 // API endpoint to decrement score
 app.post("/api/decrement-score", async (req, res) => {
-  let data = await readJSONFile(FILENAME);
+  let data = await readJSONFile(SCORES_FILE_PATH);
   const { name } = req.body;
   data[name] = (data[name] || 0) - 1;
   if (data[name] < 0)
     data[name] = 0;
-  await writeJSONFile(FILENAME, data);
+  await writeJSONFile(SCORES_FILE_PATH, data);
   logf(name + " - " + data[name]);
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
@@ -49,10 +50,10 @@ app.post("/api/decrement-score", async (req, res) => {
 
 // API endpoint to add a new user
 app.post("/api/add-user", async (req, res) => {
-  let data = await readJSONFile(FILENAME);
+  let data = await readJSONFile(SCORES_FILE_PATH);
   const { name } = req.body;
   data[name] = 0;
-  await writeJSONFile(FILENAME, data);
+  await writeJSONFile(SCORES_FILE_PATH, data);
   logf(name + " new user");
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
@@ -60,10 +61,10 @@ app.post("/api/add-user", async (req, res) => {
 
 // API endpoint to delete a user
 app.post("/api/delete-user", async (req, res) => {
-  let data = await readJSONFile(FILENAME);
+  let data = await readJSONFile(SCORES_FILE_PATH);
   const { name } = req.body;
   delete data[name];
-  await writeJSONFile(FILENAME, data);
+  await writeJSONFile(SCORES_FILE_PATH, data);
   logf(name + " delete user");
   let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
   res.json(sortedData); // Send the sorted list to the client
