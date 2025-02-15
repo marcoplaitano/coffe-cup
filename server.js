@@ -19,9 +19,16 @@ app.use(bodyParser.json());
 
 // API endpoint to get current data
 app.post("/api/get-data", async (req, res) => {
-  let data = await readJSONFile(SCORES_FILE_PATH);
-  let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
-  res.json(sortedData); // Send the sorted list to the client
+  console.log("Current directory:", __dirname);
+  console.log("Process working directory:", process.cwd());
+  try {
+    let data = await readJSONFile(SCORES_FILE_PATH);
+    let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+    res.json(sortedData); // Send the sorted list to the client
+  } catch (err) {
+    console.error('Error reading the scores file:', err);
+    res.status(500).send('Error reading the scores file.');
+  }
 });
 
 // API endpoint to increment score
